@@ -9,12 +9,21 @@ const { BASE_URL } = require('../config/env');
  */
 function mapApiItem(item) {
   if (!item) return null;
-  const isSeries = item.contentType === 'series';
+  const isSeries = item.contentType === 'series' ||
+                   item.contentType === 'tv' ||
+                   item.contentType === 'tv_series' ||
+                   item.type === 'series' ||
+                   item.type === 'tv' ||
+                   item.type === 'tv_series' ||
+                   !!item.numberOfSeasons ||
+                   !!item.firstAirDate ||
+                   (Array.isArray(item.seasons) && item.seasons.length > 0);
   const endpoint = `${isSeries ? 'series' : 'movie'}/${item.slug}`;
 
   let year = null;
-  if (item.releaseDate) {
-    year = parseInt(String(item.releaseDate).substring(0, 4), 10) || null;
+  const dateStr = item.releaseDate || item.firstAirDate;
+  if (dateStr) {
+    year = parseInt(String(dateStr).substring(0, 4), 10) || null;
   }
 
   const posterUrl = item.posterPath ? `https://image.tmdb.org/t/p/w300${item.posterPath}` : null;

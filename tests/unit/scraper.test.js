@@ -55,6 +55,23 @@ describe('scraper.js', () => {
         link: expect.objectContaining({ endpoint: 'series/breaking-bad' })
       });
     });
+
+    it('maps a series item with tv_series or firstAirDate correctly', () => {
+      const apiItem = {
+        title: 'Reacher',
+        slug: 'reacher',
+        contentType: 'tv_series',
+        firstAirDate: '2022-02-03'
+      };
+
+      const mapped = mapApiItem(apiItem);
+      expect(mapped).toMatchObject({
+        title: 'Reacher',
+        year: 2022,
+        type: 'series',
+        link: expect.objectContaining({ endpoint: 'series/reacher' })
+      });
+    });
   });
 
   describe('mapApiDetail', () => {

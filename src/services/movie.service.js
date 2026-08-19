@@ -48,7 +48,7 @@ async function getTrendingPage(page) {
   if (cache.isHit(key, CACHE_TTL.trending)) return cache.get(key);
 
   const data = await httpClient.getJson(`/api/movies?page=${page}&limit=36&sort=popularityScore`);
-  const items = (data?.data || []).map(mapApiItem).filter(Boolean);
+  const items = (data?.data || []).map(mapApiItem).filter(i => i && i.type === 'movie');
 
 
   cache.set(key, items);
