@@ -21,10 +21,19 @@ exports.trending = async (req, res, next) => {
   }
 };
 
-
 exports.detail = async (req, res, next) => {
   try {
     const data = await seriesService.getDetail(req.params.slug);
+    success(res, data);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.seasonDetail = async (req, res, next) => {
+  try {
+    const { slug, season } = req.params;
+    const data = await seriesService.getSeasonDetail(slug, season);
     success(res, data);
   } catch (err) {
     next(err);

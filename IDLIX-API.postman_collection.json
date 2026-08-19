@@ -1,0 +1,407 @@
+{
+  "info": {
+    "_postman_id": "idlix-api-v3-collection",
+    "name": "IDLIX API v3",
+    "description": "Postman Collection for IDLIX REST API v3 — Scraper with Cloudflare Bypass and Stream Extraction.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🏠 General & Homepage",
+      "item": [
+        {
+          "name": "API Root Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Check if IDLIX API server is online and running."
+          }
+        },
+        {
+          "name": "Get Homepage Content (Flat)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/home",
+              "host": ["{{base_url}}"],
+              "path": ["api", "home"]
+            },
+            "description": "Returns all homepage content as a flat array."
+          }
+        },
+        {
+          "name": "Get Homepage Sections (Grouped)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/home/sections",
+              "host": ["{{base_url}}"],
+              "path": ["api", "home", "sections"]
+            },
+            "description": "Returns homepage content grouped by section (Featured, CinemaXXI, Trending, etc.)."
+          }
+        },
+        {
+          "name": "Get Featured Content",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/featured",
+              "host": ["{{base_url}}"],
+              "path": ["api", "featured"]
+            },
+            "description": "Returns featured / trending content items."
+          }
+        },
+        {
+          "name": "Get CinemaXXI Movies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/cinemaxxi",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cinemaxxi"]
+            },
+            "description": "Returns recently added CinemaXXI movies."
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔍 Search",
+      "item": [
+        {
+          "name": "Search Content",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/search?q=batman",
+              "host": ["{{base_url}}"],
+              "path": ["api", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "batman",
+                  "description": "Search query keyword"
+                }
+              ]
+            },
+            "description": "Search movies and series by title keyword."
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎬 Movies",
+      "item": [
+        {
+          "name": "Browse All Movies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/movie",
+              "host": ["{{base_url}}"],
+              "path": ["api", "movie"]
+            },
+            "description": "Returns a paginated list of movies."
+          }
+        },
+        {
+          "name": "Get Trending Movies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/movie/trending",
+              "host": ["{{base_url}}"],
+              "path": ["api", "movie", "trending"]
+            },
+            "description": "Returns trending movies list."
+          }
+        },
+        {
+          "name": "Get Movie Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/movie/per-aspera-ad-astra-2026",
+              "host": ["{{base_url}}"],
+              "path": ["api", "movie", "per-aspera-ad-astra-2026"]
+            },
+            "description": "Get detailed metadata for a specific movie by slug."
+          }
+        },
+        {
+          "name": "Extract Movie Stream URL",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/movie/per-aspera-ad-astra-2026/stream",
+              "host": ["{{base_url}}"],
+              "path": ["api", "movie", "per-aspera-ad-astra-2026", "stream"]
+            },
+            "description": "Extracts streaming m3u8/json URL and subtitle tracks (.vtt) for a movie."
+          }
+        }
+      ]
+    },
+    {
+      "name": "📺 TV Series",
+      "item": [
+        {
+          "name": "Browse All Series",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/series",
+              "host": ["{{base_url}}"],
+              "path": ["api", "series"]
+            },
+            "description": "Returns a paginated list of TV series."
+          }
+        },
+        {
+          "name": "Get Trending Series",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/series/trending",
+              "host": ["{{base_url}}"],
+              "path": ["api", "series", "trending"]
+            },
+            "description": "Returns trending TV series list."
+          }
+        },
+        {
+          "name": "Get Series Detail (with Populated Episodes)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/series/a-shop-for-killers-2024",
+              "host": ["{{base_url}}"],
+              "path": ["api", "series", "a-shop-for-killers-2024"]
+            },
+            "description": "Get detailed metadata and episode lists for all seasons of a TV series."
+          }
+        },
+        {
+          "name": "Get Specific Season Detail (Episode List)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/series/a-shop-for-killers-2024/season/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "series", "a-shop-for-killers-2024", "season", "1"]
+            },
+            "description": "Get list of episodes, overviews, runtimes, ratings, and thumbnails for a specific season."
+          }
+        },
+        {
+          "name": "Extract Series Episode Stream URL",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/series/a-shop-for-killers-2024/season/1/episode/1/stream",
+              "host": ["{{base_url}}"],
+              "path": ["api", "series", "a-shop-for-killers-2024", "season", "1", "episode", "1", "stream"]
+            },
+            "description": "Extracts streaming URL and subtitles for a specific series episode."
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏆 Leaderboard",
+      "item": [
+        {
+          "name": "Get Leaderboard Content",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/leaderboard",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leaderboard"]
+            },
+            "description": "Get top-ranked content on IDLIX."
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎭 Genres",
+      "item": [
+        {
+          "name": "List All Genres",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/genre",
+              "host": ["{{base_url}}"],
+              "path": ["api", "genre"]
+            },
+            "description": "Returns list of all available genres."
+          }
+        },
+        {
+          "name": "Browse by Genre (All)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/genre/action",
+              "host": ["{{base_url}}"],
+              "path": ["api", "genre", "action"]
+            },
+            "description": "Browse movies and series by genre."
+          }
+        },
+        {
+          "name": "Browse Movies by Genre",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/genre/movie/action",
+              "host": ["{{base_url}}"],
+              "path": ["api", "genre", "movie", "action"]
+            },
+            "description": "Get movies in a specific genre."
+          }
+        },
+        {
+          "name": "Browse Series by Genre (e.g. K-Drama)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/genre/series/drama-korea",
+              "host": ["{{base_url}}"],
+              "path": ["api", "genre", "series", "drama-korea"]
+            },
+            "description": "Get series in a specific genre (e.g., drama-korea)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "🌐 Countries",
+      "item": [
+        {
+          "name": "List All Countries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/country",
+              "host": ["{{base_url}}"],
+              "path": ["api", "country"]
+            },
+            "description": "Returns list of all available origin countries."
+          }
+        },
+        {
+          "name": "Browse by Country",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/country/south-korea",
+              "host": ["{{base_url}}"],
+              "path": ["api", "country", "south-korea"]
+            },
+            "description": "Browse content by origin country."
+          }
+        }
+      ]
+    },
+    {
+      "name": "📅 Years",
+      "item": [
+        {
+          "name": "List All Years",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/year",
+              "host": ["{{base_url}}"],
+              "path": ["api", "year"]
+            },
+            "description": "Returns list of available release years."
+          }
+        },
+        {
+          "name": "Browse by Year",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/year/2024",
+              "host": ["{{base_url}}"],
+              "path": ["api", "year", "2024"]
+            },
+            "description": "Browse content released in a specific year."
+          }
+        }
+      ]
+    },
+    {
+      "name": "📡 Networks",
+      "item": [
+        {
+          "name": "List All Networks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/network",
+              "host": ["{{base_url}}"],
+              "path": ["api", "network"]
+            },
+            "description": "Returns list of available TV/streaming networks."
+          }
+        },
+        {
+          "name": "Browse Netflix Content",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/network/netflix",
+              "host": ["{{base_url}}"],
+              "path": ["api", "network", "netflix"]
+            },
+            "description": "Browse content published on Netflix."
+          }
+        }
+      ]
+    }
+  ]
+}

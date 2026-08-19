@@ -104,6 +104,22 @@ function validateSearchQuery(req, res, next) {
 }
 
 /**
+ * Validates :season route parameter.
+ * Must be positive integer.
+ *
+ * @type {import('express').RequestHandler}
+ */
+function validateSeasonParam(req, res, next) {
+  const { season } = req.params;
+  const s = parseInt(season, 10);
+  if (isNaN(s) || s < 1 || String(s) !== String(season)) {
+    return res.status(400).json({ success: false, message: 'Invalid season number. Must be a positive integer.' });
+  }
+  req.params.season = s;
+  next();
+}
+
+/**
  * Validates :season and :episode route parameters.
  * Both must be positive integers. Coerces to Number on success.
  *
@@ -126,4 +142,4 @@ function validateEpisodeParams(req, res, next) {
   next();
 }
 
-module.exports = { validatePage, validateGenre, validateSlug, validateMediaSlug, validateYear, validateSearchQuery, validateEpisodeParams };
+module.exports = { validatePage, validateGenre, validateSlug, validateMediaSlug, validateYear, validateSearchQuery, validateSeasonParam, validateEpisodeParams };

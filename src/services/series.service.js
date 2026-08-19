@@ -38,12 +38,10 @@ async function getTrending() {
   return items;
 }
 
-
 /**
- * Fetch a series detail page by slug.
- * Returns rich metadata from the native JSON API.
+ * Fetch a series detail page by slug and populate episodes for all seasons.
  *
- * @param {string} slug - e.g. "the-last-of-us-2023"
+ * @param {string} slug - e.g. "a-shop-for-killers-2024"
  * @returns {Promise<Object>}
  */
 async function getDetail(slug) {
@@ -59,8 +57,69 @@ async function getDetail(slug) {
     throw err;
   }
 
+  // Populate episode details for each season
+  if (detail.seasons && detail.seasons.length > 0) {
+    await Promise.all(
+      detail.seasons.map(async (season) => {
+        try {
+          const seasonRes = await httpClient.getJson(`/api/series/${slug}/season/${season.seasonNumber}`);
+          if (seasonRes && seasonRes.season && seasonRes.season.episodes) {
+            season.episodes = seasonRes.season.episodes.map(e => ({
+              episodeNumber: e.episodeNumber,
+              title: e.name || e.title || `Episode ${e.episodeNumber}`,
+              overview: e.overview || null,
+              stillPath: e.stillPath ? `https://image.tmdb.org/t/p/w300${e.stillPath}` : null,
+              airDate: e.airDate || null,
+              runtime: e.runtime || null,
+              rating: e.voteAverage ? parseFloat(e.voteAverage) : null
+            }));
+          }
+        } catch (_) {}
+      })
+    );
+  }
+
   cache.set(key, detail);
   return detail;
+}
+
+/**
+ * Fetch specific season details (with episode list) for a series.
+ *
+ * @param {string} slug
+ * @param {number|string} seasonNumber
+ * @returns {Promise<Object>}
+ */
+async function getSeasonDetail(slug, seasonNumber) {
+  const key = `series.season.${slug}.${seasonNumber}`;
+  if (cache.isHit(key, CACHE_TTL.detail)) return cache.get(key);
+
+  const data = await httpClient.getJson(`/api/series/${slug}/season/${seasonNumber}`);
+  if (!data || !data.season) {
+    const err = new Error('Season not found');
+    err.status = 404;
+    throw err;
+  }
+
+  const seasonData = {
+    seasonNumber: data.season.seasonNumber,
+    name: data.season.name,
+    overview: data.season.overview || null,
+    airDate: data.season.airDate || null,
+    episodeCount: data.season.episodeCount || 0,
+    episodes: (data.season.episodes || []).map(e => ({
+      episodeNumber: e.episodeNumber,
+      title: e.name || e.title || `Episode ${e.episodeNumber}`,
+      overview: e.overview || null,
+      stillPath: e.stillPath ? `https://image.tmdb.org/t/p/w300${e.stillPath}` : null,
+      airDate: e.airDate || null,
+      runtime: e.runtime || null,
+      rating: e.voteAverage ? parseFloat(e.voteAverage) : null
+    }))
+  };
+
+  cache.set(key, seasonData);
+  return seasonData;
 }
 
 /**
@@ -70,15 +129,7 @@ async function getDetail(slug) {
  * Results are cached with a short TTL since stream URLs expire.
  *
  * @param {string} slug - e.g. "the-last-of-us-2023"
- * @returns {Promise<{
- *   streamUrl:   string | null,
- *   subtitles:   Array<{ lang: string, label: string, url: string }>,
- *   videoId:     string | null,
- *   title:       string | null,
- *   durationSec: number | null,
- *   maxHeight:   number | null,
- *   expiresAt:   number | null,
- * }>}
+ * @returns {Promise<Object>}
  */
 async function getStreamData(slug) {
   const key = `series.stream.${slug}`;
@@ -95,15 +146,7 @@ async function getStreamData(slug) {
  * @param {string} slug    - e.g. "oasis-2026"
  * @param {number} season  - Season number (1-based)
  * @param {number} episode - Episode number (1-based)
- * @returns {Promise<{
- *   streamUrl:   string | null,
- *   subtitles:   Array<{ lang: string, label: string, url: string }>,
- *   videoId:     string | null,
- *   title:       string | null,
- *   durationSec: number | null,
- *   maxHeight:   number | null,
- *   expiresAt:   number | null,
- * }>}
+ * @returns {Promise<Object>}
  */
 async function getEpisodeStreamData(slug, season, episode) {
   const key = `series.stream.${slug}.s${season}e${episode}`;
@@ -117,8 +160,8 @@ async function getEpisodeStreamData(slug, season, episode) {
 module.exports = {
   getBrowse,
   getTrending,
-
   getDetail,
+  getSeasonDetail,
   getStreamData,
   getEpisodeStreamData,
 };
