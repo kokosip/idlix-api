@@ -72,6 +72,30 @@ describe('scraper.js', () => {
         link: expect.objectContaining({ endpoint: 'series/reacher' })
       });
     });
+
+    it('maps nested media objects correctly (e.g. wrapper object containing series/movie)', () => {
+      const apiItem = {
+        contentType: 'series',
+        series: {
+          title: 'Reacher',
+          slug: 'reacher-2022',
+          posterPath: '/reacher.jpg',
+          firstAirDate: '2022-02-03',
+          voteAverage: 8.5
+        }
+      };
+
+      const mapped = mapApiItem(apiItem);
+      expect(mapped).toMatchObject({
+        title: 'Reacher',
+        year: 2022,
+        type: 'series',
+        rating: 8.5,
+        poster: 'https://image.tmdb.org/t/p/w300/reacher.jpg',
+        slug: 'reacher-2022',
+        link: expect.objectContaining({ endpoint: 'series/reacher-2022' })
+      });
+    });
   });
 
   describe('mapApiDetail', () => {
