@@ -17,6 +17,18 @@ const errorHandler = require('./middleware/errorHandler');
 function createApp() {
   const app = express();
 
+  // ── Request Logger Middleware ───────────────────────────────────────────
+  if (process.env.NODE_ENV !== 'test') {
+    app.use((req, res, next) => {
+      const start = Date.now();
+      res.on('finish', () => {
+        const duration = Date.now() - start;
+        console.log(`[HTTP] ${req.method} ${req.originalUrl} ${res.statusCode} - ${duration}ms`);
+      });
+      next();
+    });
+  }
+
   // ── API Documentation (Scalar) ──────────────────────────────────────────
   try {
     const swaggerDocument = require('../swagger_output.json');
@@ -41,7 +53,6 @@ function createApp() {
 
   // ── API routes ──────────────────────────────────────────────────────────
   app.use('/api', routes);
-
 
   // ── Static files ────────────────────────────────────────────────────────
   app.use(express.static(path.join(__dirname, '..', 'public')));
