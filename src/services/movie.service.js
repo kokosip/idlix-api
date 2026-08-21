@@ -9,11 +9,12 @@ const { mapApiItem, mapApiDetail } = require('../lib/scraper');
  * Fetch and parse the main movie browse page.
  * @returns {Promise<Array>}
  */
-async function getBrowse() {
-  const key = 'movie.browse';
+async function getBrowse(page = 1) {
+  const p = Math.max(1, parseInt(page, 10) || 1);
+  const key = `movie.browse.page.${p}`;
   if (cache.isHit(key, CACHE_TTL.page)) return cache.get(key);
 
-  const data = await httpClient.getJson('/api/movies?page=1&limit=36&sort=createdAt');
+  const data = await httpClient.getJson(`/api/movies?page=${p}&limit=36&sort=createdAt`);
   const items = (data?.data || []).map(mapApiItem).filter(Boolean);
 
   cache.set(key, items);

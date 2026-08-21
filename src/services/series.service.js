@@ -9,11 +9,12 @@ const { mapApiItem, mapApiDetail } = require('../lib/scraper');
  * Fetch and parse the main TV series browse page.
  * @returns {Promise<Array>}
  */
-async function getBrowse() {
-  const key = 'series.browse';
+async function getBrowse(page = 1) {
+  const p = Math.max(1, parseInt(page, 10) || 1);
+  const key = `series.browse.page.${p}`;
   if (cache.isHit(key, CACHE_TTL.page)) return cache.get(key);
 
-  const data = await httpClient.getJson('/api/series?page=1&limit=36&sort=createdAt');
+  const data = await httpClient.getJson(`/api/series?page=${p}&limit=36&sort=createdAt`);
   const items = (data?.data || []).map(mapApiItem).filter(Boolean);
   
   cache.set(key, items);

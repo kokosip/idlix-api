@@ -5,7 +5,8 @@ const { success } = require('../lib/responseHelper');
 
 exports.browse = async (req, res, next) => {
   try {
-    const data = await movieService.getBrowse();
+    const page = req.query.page || req.params.page || 1;
+    const data = await movieService.getBrowse(page);
     success(res, data);
   } catch (err) {
     next(err);
